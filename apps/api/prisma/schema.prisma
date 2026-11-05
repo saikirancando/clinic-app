@@ -1,0 +1,179 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+enum Sex {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum LabFlag {
+  NORMAL
+  LOW
+  HIGH
+  CRITICAL
+}
+
+enum PrescriptionStatus {
+  ACTIVE
+  COMPLETED
+  DISCONTINUED
+}
+
+enum CallType {
+  AUDIO
+  VIDEO
+}
+
+enum CallStatus {
+  RINGING
+  ACTIVE
+  DECLINED
+  MISSED
+  ENDED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         Role
+  firstName    String
+  lastName     String
+  createdAt    DateTime  @default(now())
+  doctor       Doctor?
+  patient      Patient?
+  messages     Message[]
+}
+
+model Doctor {
+  id            String         @id @default(cuid())
+  userId        String         @unique
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty     String
+  licenseNumber String
+  patients      Patient[]
+  prescriptions Prescription[]
+  calls         Call[]
+}
+
+model Patient {
+  id               String          @id @default(cuid())
+  userId           String          @unique
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctorId         String
+  doctor           Doctor          @relation(fields: [doctorId], references: [id])
+  mrn              String          @unique
+  dateOfBirth      DateTime        @db.Date
+  sex              Sex
+  phone            String
+  address          String
+  bloodType        String
+  heightCm         Int
+  weightKg         Int
+  allergies        String[]
+  conditions       String[]
+  emergencyContact String
+  labResults       LabResult[]
+  imagingReports   ImagingReport[]
+  prescriptions    Prescription[]
+  messages         Message[]
+  calls            Call[]
+
+  @@index([doctorId])
+}
+
+model LabResult {
+  id             String   @id @default(cuid())
+  patientId      String
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  panel          String
+  testName       String
+  value          String
+  unit           String
+  referenceRange String
+  flag           LabFlag  @default(NORMAL)
+  collectedAt    DateTime
+
+  @@index([patientId, collectedAt])
+}
+
+model ImagingReport {
+  id          String   @id @default(cuid())
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  modality    String
+  bodyPart    String
+  findings    String
+  impression  String
+  radiologist String
+  performedAt DateTime
+
+  @@index([patientId, performedAt])
+}
+
+model Prescription {
+  id             String             @id @default(cuid())
+  patientId      String
+  patient        Patient            @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  prescribedById String
+  prescribedBy   Doctor             @relation(fields: [prescribedById], references: [id])
+  drugName       String
+  dosage         String
+  route          String
+  frequency      String
+  durationDays   Int?
+  quantity       Int?
+  refills        Int                @default(0)
+  instructions   String?
+  status         PrescriptionStatus @default(ACTIVE)
+  startDate      DateTime           @db.Date
+  endDate        DateTime?          @db.Date
+  createdAt      DateTime           @default(now())
+
+  @@index([patientId, startDate])
+}
+
+/// Each patient has exactly one assigned doctor, so a conversation is keyed by patient.
+model Message {
+  id        String    @id @default(cuid())
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User      @relation(fields: [senderId], references: [id])
+  body      String
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  @@index([patientId, createdAt])
+}
+
+model Call {
+  id         String     @id @default(cuid())
+  patientId  String
+  patient    Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId   String
+  doctor     Doctor     @relation(fields: [doctorId], references: [id])
+  type       CallType
+  status     CallStatus @default(RINGING)
+  meetingId  String
+  createdAt  DateTime   @default(now())
+  answeredAt DateTime?
+  endedAt    DateTime?
+
+  @@index([patientId, status])
+  @@index([doctorId, status])
+}
