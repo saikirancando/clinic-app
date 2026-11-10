@@ -88,7 +88,7 @@ export default function PatientProfilePage() {
                 role="tab"
                 aria-selected={tab === t}
                 onClick={() => setTab(t)}
-                className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium ${tab === t ? 'bg-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+                className={`flex-1 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium sm:flex-none sm:px-4 ${tab === t ? 'bg-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
               >
                 {t}
               </button>
