@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
 import { useAuth } from '@/providers/auth-provider';
@@ -40,7 +41,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600 text-xl font-bold text-white">R</div>
+          <Image src="/sky-studio-logo.svg" alt="SKY Studio" width={68} height={80} priority className="mx-auto mb-3 h-20 w-auto" />
           <h1 className="text-2xl font-semibold">SKY Clinic</h1>
           <p className="text-sm text-slate-500">Sign in to the doctor or patient portal</p>
         </div>
@@ -97,6 +98,10 @@ export default function LoginPage() {
             ))}
           </ul>
         </div>
+        <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">
+          Demo project · all data is fictional · not for medical use.
+          <br />© 2026 SKY TECH CONSULTING LTD. All rights reserved. Not to be used without written consent.
+        </p>
       </div>
     </main>
   );
