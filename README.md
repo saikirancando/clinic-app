@@ -8,6 +8,8 @@ A clinic web application with separate **Doctor** and **Patient** portals: patie
 | **API** | https://clinic-api-sepia.vercel.app/health |
 | **Stack** | Next.js 15 · React 19 · NestJS 11 · TypeScript · Prisma · PostgreSQL · Pusher Channels · Cloudflare RealtimeKit |
 
+> **Legal notice.** © 2026 SKY TECH CONSULTING LTD. All rights reserved. This is a **demo project**: it may not be used, copied, modified, deployed or distributed without prior written consent from SKY TECH CONSULTING LTD. All data is fictional; the app is **not for medical use** and must not hold real patient information. See [LICENSE](LICENSE).
+
 ## Test credentials
 
 All accounts use the password **`Password123!`** (fictional data only).
