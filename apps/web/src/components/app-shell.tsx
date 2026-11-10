@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -31,7 +32,7 @@ export function AppShell({ role, children }: { role: Role; children: React.React
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <Link href={role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 font-bold text-white">R</span>
+            <Image src="/sky-studio-logo.svg" alt="SKY Studio" width={34} height={40} priority className="h-10 w-auto" />
             <span className="font-semibold">SKY Clinic</span>
             <span className="hidden rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 sm:inline">
               {role === 'DOCTOR' ? 'Doctor portal' : 'Patient portal'}
